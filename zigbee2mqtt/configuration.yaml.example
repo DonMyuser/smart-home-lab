@@ -1,0 +1,27 @@
+version: 5
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://core-mosquitto
+  user: mqtt
+  password: CHANGE_ME
+serial:
+  port: /dev/ttyUSB0
+  adapter: zstack
+  baudrate: 115200
+  rtscts: false
+advanced:
+  adapter_delay: 100
+  soft_reset_timeout: 0
+  log_level: info
+  channel: 25
+frontend:
+  enabled: true
+  port: 8099
+homeassistant:
+  enabled: true
+blocklist: []
+devices:
+  '0x00158d00013cd83e':
+    friendly_name: Bombilla habitación
+  '0x08fd52fffe085d52':
+    friendly_name: Relé habitación

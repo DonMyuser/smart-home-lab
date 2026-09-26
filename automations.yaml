@@ -1,0 +1,111 @@
+- id: '1784301758614'
+  alias: Botón 2 controla lámpara Zigbee
+  description: ''
+  triggers:
+  - trigger: mqtt
+    topic: zigbee2mqtt/Relé habitación/action
+    payload: toggle_l2
+  conditions: []
+  actions:
+  - wait_for_trigger:
+    - trigger: mqtt
+      topic: zigbee2mqtt/Relé habitación/action
+      payload: toggle_l2
+    timeout:
+      seconds: 0.25
+    continue_on_timeout: true
+  - if:
+    - condition: template
+      value_template: '{{ wait.trigger is not none }}'
+    then:
+    - if:
+      - condition: state
+        entity_id: input_boolean.modo_especial_habitacion
+        state: 'off'
+      then:
+      - action: light.turn_on
+        target:
+          entity_id: light.bombilla_habitacion
+        data:
+          xy_color:
+          - 1
+          - 0.34
+          brightness_pct: 1
+          transition: 0
+      - delay:
+          milliseconds: 100
+      - action: light.turn_on
+        target:
+          entity_id: light.bombilla_habitacion
+        data:
+          brightness_pct: 50
+          transition: 0.7
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.modo_especial_habitacion
+      else:
+      - action: light.turn_on
+        target:
+          entity_id: light.bombilla_habitacion
+        data:
+          color_temp_kelvin: 2700
+          brightness_pct: 1
+          transition: 0
+      - delay:
+          milliseconds: 50
+      - action: light.turn_on
+        target:
+          entity_id: light.bombilla_habitacion
+        data:
+          brightness_pct: 25
+          transition: 0.7
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.modo_especial_habitacion
+    else:
+    - action: light.toggle
+      target:
+        entity_id: light.bombilla_habitacion
+      data:
+        transition: 0.4
+  mode: single
+- id: '1784315409841'
+  alias: Encender luz habitación si PC encendido y anochece
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.pc_dormitorio
+    to: 'on'
+  - trigger: numeric_state
+    entity_id: sun.sun
+    attribute: elevation
+    below: 3
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.dormitorio_pc_dormitorio
+    state:
+    - 'on'
+  - condition: numeric_state
+    entity_id: sun.sun
+    attribute: elevation
+    below: 3
+  - condition: state
+    entity_id: light.bombilla_habitacion
+    state: 'off'
+  actions:
+  - action: light.turn_on
+    target:
+      entity_id: light.bombilla_habitacion
+    data:
+      color_temp_kelvin: 2700
+      brightness_pct: 0.1
+      transition: 0
+  - delay:
+      milliseconds: 0
+  - action: light.turn_on
+    target:
+      entity_id: light.bombilla_habitacion
+    data:
+      brightness_pct: 25
+      transition: 0.7
+  mode: single

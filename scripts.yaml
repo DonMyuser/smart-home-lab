@@ -1,0 +1,4 @@
+apagar_pc:
+  alias: Apagar PC Torre
+  sequence:
+    - service: shell_command.apagar_pc

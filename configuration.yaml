@@ -1,0 +1,33 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+wake_on_lan:
+
+shell_command:
+  apagar_pc: !secret apagar_pc_cmd
+
+switch:
+  - platform: wake_on_lan
+    name: "PC Torre"
+    mac: !secret pc_torre_mac
+    host: !secret pc_torre_host
+    broadcast_address: !secret pc_torre_broadcast
+    turn_off:
+      service: shell_command.apagar_pc
+
+recorder:
+  purge_keep_days: 7
+  commit_interval: 5
+  exclude:
+    domains:
+      - update
+      - automation
+    entities:
+      - sun.sun
