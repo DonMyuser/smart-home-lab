@@ -148,92 +148,18 @@
 
 ```mermaid
 
-flowchart LR
+graph TB
+    U["📱 Mobile / 💻 PC"] -->|"home WiFi"| R["Router"] --> HA["Home Assistant<br/>(Raspberry Pi)"]
+    U -.->|"Tailscale tunnel (remote)"| HA
+    HA --> AG["AdGuard Home"]
+    HA --> Z["Zigbee2MQTT"] --> D["SONOFF Dongle"]
+    D -. Zigbee .-> M["SONOFF MINI-D"]
+    D -. Zigbee .-> B["Paulmann Bulb<br/>(table lamp)"]
+    P["Jung Push Button"] -. wired .-> M
+    M --> C["Ceiling light"]
+    M -. "press events" .-> HA
+    HA -->|"WoL / SSH"| PC["🖥️ Desktop PC"]
 
-
-
-subgraph Client["👤 Client"]
-
-User["Mobile / PC"]
-
-end
-
-
-
-subgraph Network["🌐 Network"]
-
-VPN["Tailscale VPN"]
-
-Router["Router"]
-
-end
-
-
-
-subgraph Server["🧠 Server"]
-
-HA["Home Assistant"]
-
-AG["AdGuard Home"]
-
-Z2M["Zigbee2MQTT"]
-
-end
-
-
-
-subgraph Zigbee["📻 Zigbee Network"]
-
-Dongle["SONOFF Zigbee Dongle"]
-
-end
-
-
-
-subgraph Bedroom["🛏️ Bedroom"]
-
-Mini["SONOFF MINI-D"]
-
-Bulb["Paulmann Zigbee Bulb"]
-
-Switch["Jung Push Button"]
-
-PC["Desktop PC"]
-
-end
-
-
-User --> VPN
-
-VPN --> Router
-
-Router --> HA
-
-
-
-HA --> AG
-
-HA --> Z2M
-
-Z2M --> Dongle
-
-
-
-Dongle --> Mini
-
-Dongle --> Bulb
-
-
-
-Switch -. controls .-> Mini
-
-Mini --> Bulb
-
-
-
-HA -->|Wake-on-LAN| PC
-
-HA -->|SSH shutdown| PC
 
 ```
 
